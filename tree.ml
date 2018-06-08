@@ -14,4 +14,12 @@ let rec bst_push t value = match t with
                       else Node (v, l, bst_push r value)
   | Leaf -> Node (value, Leaf, Leaf);;
 
- 
+let rec bst_search t value = match t with
+  | Node (v, l, r) -> if v == value then
+                          Node (v, l, r)
+                      else
+                        if v > value then
+                          bst_search l value
+                        else
+                          bst_search r value
+  | Leaf -> Leaf
