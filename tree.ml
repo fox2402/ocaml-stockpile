@@ -9,11 +9,9 @@ let rec height t = match t with
 (* BST *)
 let rec bst_find_min t = match t with
   | Node (v, l, r) -> (match l with
-                      | Node (vl, ll, lr) -> (match ll with
-                            | Node (vll, lll, llr) -> bst_find_min l
-                            | Leaf -> (l, ll))
-                      | Leaf -> (l, Leaf))
-  | Leaf -> (Leaf, Leaf)
+                      | Node -> bst_find_min l
+                      | Leaf -> v
+  | Leaf -> -1
 
 let rec bst_push t value = match t with
   | Node (v, l, r) -> if v > value 
@@ -31,7 +29,18 @@ let rec bst_search t value = match t with
                           bst_search r value
   | Leaf -> Leaf
 
-let rec bst_delete t value = let node = bst_search t value in
-  match node with
-  | Node (v, l, r) -> Node (v, l, r)
-  | Leaf -> Leaf
+
+let rec bst_delete t value = match t with
+  | Node (v, l, r) -> if v < value then
+                        let (res, va) = bst_delete l value in
+                        (Node (v, res, r), va)
+                      if v > value then
+                        let (res, va) = bst_delete r value in
+                        (Node (v, l, res), va)
+                      else
+                        (match l, r with
+                        | (Node, Leaf) -> (l, v)
+                        | (Leaf, Node) -> (r, v)
+                        | _, _ ->
+            
+  | Leaf -> (Leaf, -1)
