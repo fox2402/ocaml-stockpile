@@ -1,4 +1,5 @@
 type 'a tree = Node of 'a * 'a tree * 'a tree | Leaf;;
+type 'a avl = AVL_Node of int * 'a * 'a avl * 'a avl | AVL_Leaf;;
 
 (*common tree *)
 
@@ -48,6 +49,7 @@ let rec bst_delete t value = match t with
                           (Node (va, l, del_res), value))
             
   | Leaf -> (Leaf, -1);;
+
 
 
 let t = Leaf;;
