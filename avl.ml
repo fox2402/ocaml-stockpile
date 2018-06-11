@@ -13,3 +13,38 @@ let avl_rotate_right avl = match avl with
     |AVL_Node(lb, lv, ll, lr) -> AVL_Node (lb, lv, ll, AVL_Node(b, v, lr, r))
     |AVL_Leaf -> AVL_Leaf)
   |AVL_Leaf -> AVL_Leaf;;
+
+let avl_balance_right avl unb = 
+  let avl = 
+    if unb != 0 then 
+      let AVL_Node(b, v, l, r) = avl in
+      AVL_Node(b + 1, v, l, r);
+    else
+      avl
+  in
+  let AVL_Node(b, v, l, r) = avl in
+  if b == 2 then
+    let AVL_Node(rb, rv, rl, rr) = r in
+    if rb <= 0 then
+      let AVL_Node(b, v, l, r) = avl_rotate_left avl in
+      let AVL_Node(lb, lv, ll, lr) = l in
+      (AVL_Node(b, v, AVL_Node(0, lv, ll, lr), r), 0)
+    else
+      let avl = avl_rotate_left (AVL_Node(b, v, l, avl_rotate_right r)) in
+      let AVL_Node(b, v, l, r) = avl in 
+      let AVL_Node(lb, lv, ll, lr) = l in
+      let AVL_Node(rb, rv, rl, rr) = r in
+      match b with
+      |1 -> (AVL_Node(0, v, AVL_Node(0, lv, ll, lr), AVL_Node(-1, rv, rl, rr))
+        ,0)
+      |0 -> (AVL_Node(0, v, AVL_Node(0, lv, ll, lr), AVL_Node(0, rv, rl, rr))
+        ,0)
+      |(-1) -> (AVL_Node(0, v, AVL_Node(1, lv, ll, lr), AVL_Node(0, rv, rl, rr))
+        ,0)
+  else
+    let unb = 
+      if unb == 1 || b != 1 then
+        0
+      else
+        unb
+    in (avl, unb);;
