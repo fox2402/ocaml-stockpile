@@ -1,5 +1,4 @@
 type 'a tree = Node of 'a * 'a tree * 'a tree | Leaf;;
-type 'a avl = AVL_Node of int * 'a * 'a avl * 'a avl | AVL_Leaf;;
 
 (*common tree *)
 
