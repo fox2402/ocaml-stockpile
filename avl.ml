@@ -14,6 +14,18 @@ let avl_rotate_right avl = match avl with
     |AVL_Leaf -> AVL_Leaf)
   |AVL_Leaf -> AVL_Leaf;;
 
+let reapply_balance avl = 
+  let AVL_Node(b, v, l, r) = avl in 
+  let AVL_Node(lb, lv, ll, lr) = l in
+  let AVL_Node(rb, rv, rl, rr) = r in
+  match b with
+  |1 -> (AVL_Node(0, v, AVL_Node(0, lv, ll, lr), AVL_Node(-1, rv, rl, rr))
+    ,0)
+  |0 -> (AVL_Node(0, v, AVL_Node(0, lv, ll, lr), AVL_Node(0, rv, rl, rr))
+    ,0)
+  |(-1) -> (AVL_Node(0, v, AVL_Node(1, lv, ll, lr), AVL_Node(0, rv, rl, rr))
+    ,0);;
+
 let avl_balance_right avl unb = 
   let avl = 
     if unb != 0 then 
@@ -31,16 +43,7 @@ let avl_balance_right avl unb =
       (AVL_Node(b, v, AVL_Node(0, lv, ll, lr), r), 0)
     else
       let avl = avl_rotate_right (AVL_Node(b, v, avl_rotate_left l, r)) in
-      let AVL_Node(b, v, l, r) = avl in 
-      let AVL_Node(lb, lv, ll, lr) = l in
-      let AVL_Node(rb, rv, rl, rr) = r in
-      match b with
-      |1 -> (AVL_Node(0, v, AVL_Node(0, lv, ll, lr), AVL_Node(-1, rv, rl, rr))
-        ,0)
-      |0 -> (AVL_Node(0, v, AVL_Node(0, lv, ll, lr), AVL_Node(0, rv, rl, rr))
-        ,0)
-      |(-1) -> (AVL_Node(0, v, AVL_Node(1, lv, ll, lr), AVL_Node(0, rv, rl, rr))
-        ,0)
+      reapply_balance avl
   else
     let unb = 
       if unb == 1 || b != 1 then
@@ -66,16 +69,7 @@ let avl_balance_left avl unb =
       (AVL_Node(b, v, AVL_Node(0, lv, ll, lr), r), 0)
     else
       let avl = avl_rotate_left (AVL_Node(b, v, avl_rotate_right l, r)) in
-      let AVL_Node(b, v, l, r) = avl in 
-      let AVL_Node(lb, lv, ll, lr) = l in
-      let AVL_Node(rb, rv, rl, rr) = r in
-      match b with
-      |1 -> (AVL_Node(0, v, AVL_Node(0, lv, ll, lr), AVL_Node(-1, rv, rl, rr))
-        ,0)
-      |0 -> (AVL_Node(0, v, AVL_Node(0, lv, ll, lr), AVL_Node(0, rv, rl, rr))
-        ,0)
-      |(-1) -> (AVL_Node(0, v, AVL_Node(1, lv, ll, lr), AVL_Node(0, rv, rl, rr))
-        ,0)
+      reapply_balance avl
   else
     let unb = 
       if unb == -1 || b != 1 then
