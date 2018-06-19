@@ -40,11 +40,11 @@ let avl_balance_right avl unb =
   in
   let (b, v, l, r) = avl_ex_node avl in
   if b == 2 then
-    let (rb, rv, rl, rr) = avl_ex_node r in
-    if rb <= 0 then
-      let (b, v, l, r) = avl_ex_node (avl_rotate_left avl) in
-      let (lb, lv, ll, lr) = avl_ex_node l in
-      (AVL_Node(b, v, AVL_Node(0, lv, ll, lr), r), 0)
+    let (lb, lv, ll, lr) = avl_ex_node l in
+    if lb >= 0 then
+      let (b, v, l, r) = avl_ex_node (avl_rotate_right avl) in
+      let (rb, rv, rl, rr) = avl_ex_node r in
+      (AVL_Node(0, v, l, AVL_Node(0, rv, rl, rr)), 0)
     else
       let avl = avl_rotate_right (AVL_Node(b, v, avl_rotate_left l, r)) in
       reapply_balance avl
@@ -66,11 +66,11 @@ let avl_balance_left avl unb =
   in
   let (b, v, l, r) = avl_ex_node avl in
   if b == -2 then
-    let (lb, lv, ll, lr) = avl_ex_node l in
-    if lb <= 0 then
+    let (rb, rv, rl, rr) = avl_ex_node r in
+    if rb <= 0 then
       let (b, v, l, r) = avl_ex_node (avl_rotate_left avl) in
       let (lb, lv, ll, lr) = avl_ex_node l in
-      (AVL_Node(b, v, AVL_Node(0, lv, ll, lr), r), 0)
+      (AVL_Node(0, v, AVL_Node(0, lv, ll, lr), r), 0)
     else
       let avl = avl_rotate_left (AVL_Node(b, v, avl_rotate_right l, r)) in
       reapply_balance avl
