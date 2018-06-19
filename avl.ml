@@ -50,7 +50,7 @@ let avl_balance_right avl unb =
       reapply_balance avl
   else
     let unb = 
-      if unb == 1 || b != 1 then
+      if not(unb != 0 && b == 1) then
         0
       else
         unb
@@ -76,8 +76,23 @@ let avl_balance_left avl unb =
       reapply_balance avl
   else
     let unb = 
-      if unb == -1 || b != 1 then
+      if not(unb != 0 && b == -1) then
         0
       else
         unb
     in (avl, unb);;
+
+let rec _avl_insert avl e eq = 
+  match avl with
+  | AVL_Leaf -> (AVL_Node(0, e, AVL_Leaf, AVL_Leaf), 1)
+  | AVL_Node(b, v, l, r) -> 
+    (if (e < v) then let (res, unb) = _avl_insert l e eq in
+      Printf.printf "went left: eq:%d\n" unb;
+      avl_balance_right (AVL_Node(b, v, res, r)) unb
+    else let (res, unb) = _avl_insert r e eq in
+      Printf.printf "went right: eq:%d\n" unb;
+      avl_balance_left (AVL_Node(b, v, l, res)) unb);;
+
+let avl_insert avl e = 
+  let (res, unb) = _avl_insert avl e 0 in
+  res;;
