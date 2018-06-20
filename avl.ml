@@ -87,12 +87,54 @@ let rec _avl_insert avl e eq =
   | AVL_Leaf -> (AVL_Node(0, e, AVL_Leaf, AVL_Leaf), 1)
   | AVL_Node(b, v, l, r) -> 
     (if (e < v) then let (res, unb) = _avl_insert l e eq in
-      Printf.printf "went left: eq:%d\n" unb;
       avl_balance_right (AVL_Node(b, v, res, r)) unb
     else let (res, unb) = _avl_insert r e eq in
-      Printf.printf "went right: eq:%d\n" unb;
       avl_balance_left (AVL_Node(b, v, l, res)) unb);;
 
 let avl_insert avl e = 
   let (res, unb) = _avl_insert avl e 0 in
   res;;
+
+let rec _avl_del_max avl = match avl with
+  |AVL_Leaf -> (avl, 0, 0)
+  |AVL_Node (b, v, l, r) -> (match l with 
+                            |AVL_Leaf -> (r, v, 1)
+                            |_ -> let (res, resv, unb) = _avl_del_max r in
+                            let (fres, funb) = 
+                            avl_balance_right (AVL_Node (b, v, l, res)) unb in
+                            (fres, resv, funb));;
+
+
+let rec _avl_del_min avl = match avl with
+  |AVL_Leaf -> (avl, 0, 0)
+  |AVL_Node (b, v, l, r) -> (match l with 
+                            |AVL_Leaf -> (r, v, 1)
+                            |_ -> let (res, resv, unb) = _avl_del_min l in
+                            let (fres, funb) = 
+                            avl_balance_left (AVL_Node (b, v, res, r)) unb in
+                            (fres, resv, funb));;
+
+let rec _avl_delete avl e unb = match avl with
+  |AVL_Leaf -> (AVL_Leaf, unb)
+  |AVL_Node (b, v, l, r) when e < v -> (let (res, unb) = _avl_delete l e unb in
+                                        avl_balance_left 
+                                        (AVL_Node(b, v, res, r)) unb)
+  |AVL_Node (b, v, l, r) when e > v -> (let (res, unb) = _avl_delete r e unb in
+                                        avl_balance_right 
+                                        (AVL_Node(b, v, l, res)) unb)
+  |AVL_Node (b, v, l, r) -> (match (l,r) with
+                            |(AVL_Leaf, AVL_Leaf) -> (AVL_Leaf, 1)
+                            |(AVL_Leaf, _) -> (let (res, resv, resb) =
+                            _avl_del_min r in avl_balance_right 
+                            (AVL_Node (b, resv, res, r)) resb) 
+                            |(_, _) ->(let (res, resv, resb) = 
+                            _avl_del_max l in avl_balance_left 
+                            (AVL_Node (b,resv, l, res)) resb));;
+
+
+let avl_delete avl e = let (res, unb) = _avl_delete avl e 0 in res;;
+
+let a = AVL_Leaf;;
+let a = avl_insert a 2;;
+let a = avl_insert a 3;;
+let a = avl_insert a 4;;
