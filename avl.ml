@@ -17,7 +17,7 @@ let avl_rotate_right avl = match avl with
     |AVL_Leaf -> AVL_Leaf)
   |AVL_Leaf -> AVL_Leaf;;
 
-let reapply_balance avl = 
+let reapply_balance avl =
   let (b, v, l, r) = avl_ex_node avl in 
   let (lb, lv, ll, lr) = avl_ex_node l in
   let (rb, rv, rl, rr) = avl_ex_node r in
@@ -72,7 +72,7 @@ let avl_balance_left avl unb =
       let (lb, lv, ll, lr) = avl_ex_node l in
       (AVL_Node(0, v, AVL_Node(0, lv, ll, lr), r), 0)
     else
-      let avl = avl_rotate_left (AVL_Node(b, v, avl_rotate_right l, r)) in
+      let avl = avl_rotate_left (AVL_Node(b, v, l, avl_rotate_right r)) in
       reapply_balance avl
   else
     let unb = 
@@ -97,7 +97,7 @@ let avl_insert avl e =
 
 let rec _avl_del_max avl = match avl with
   |AVL_Leaf -> (avl, 0, 0)
-  |AVL_Node (b, v, l, r) -> (match l with 
+  |AVL_Node (b, v, l, r) -> (match r with 
                             |AVL_Leaf -> (r, v, 1)
                             |_ -> let (res, resv, unb) = _avl_del_max r in
                             let (fres, funb) = 
@@ -138,3 +138,5 @@ let a = AVL_Leaf;;
 let a = avl_insert a 2;;
 let a = avl_insert a 3;;
 let a = avl_insert a 4;;
+let a = avl_insert a 6;;
+let a = avl_insert a 5;;
