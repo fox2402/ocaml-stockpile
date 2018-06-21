@@ -129,7 +129,7 @@ let rec _avl_delete avl e unb = match avl with
                             (AVL_Node (b, resv, res, r)) resb) 
                             |(_, _) ->(let (res, resv, resb) = 
                             _avl_del_max l in avl_balance_left 
-                            (AVL_Node (b,resv, l, res)) resb));;
+                            (AVL_Node (b, resv, res, r)) resb));;
 
 
 let avl_delete avl e = let (res, unb) = _avl_delete avl e 0 in res;;
